@@ -1,0 +1,82 @@
+name: Create and publish latest qBittorrent image
+
+on:
+  schedule:
+     - cron: "0 12 * * *"
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  TEMPFILE: new-version.txt
+
+jobs:
+  get-latest-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get latest package version
+        id: get-latest-version
+        run: |
+          ./.github/scripts/check-new-version.sh ${{ env.TEMPFILE }}
+        shell: bash
+        env:
+          supersecretpat: ${{ secrets.supersecretpat }}
+
+      - name: Log if no new version
+        if: ${{ failure() }}
+        run: |
+          echo "Upstream version is the same as mine. No need to update."
+
+      - name: Cancel current workflow if no new version
+        if: ${{ failure() }}
+        uses: andymckay/cancel-action@0.2
+
+      - name: Upload package version artifact
+        if: steps.get-latest-version.outputs.exit_code == 0
+        uses: actions/upload-artifact@v2
+        with:
+          name: package-version
+          path: ${{ env.TEMPFILE }}
+
+  build-and-publish:
+    runs-on: ubuntu-latest
+    needs: [get-latest-tag]
+
+    steps:
+      - name: Download package version artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: package-version
+
+      - name: Package version to output & environment variable
+        id: package-version-to-output
+        run: |
+          PACKAGE_VERSION=`cat ${{ env.TEMPFILE }}`
+          echo $PACKAGE_VERSION
+          echo ::set-output name=PACKAGE_VERSION::$(echo ${PACKAGE_VERSION})
+
+      - name: Use the value
+        id: step_two
+        run: |
+          echo "output is ${{ steps.package-version-to-output.outputs.PACKAGE_VERSION }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./qBittorrent-with-VueTorrent
+          push: true
+          build-args: |
+            BASE_IMAGE=ghcr.io/k8s-at-home/qbittorrent:${{ steps.package-version-to-output.outputs.PACKAGE_VERSION }}
+          tags: "ghcr.io/arsenikki/qbittorrent:${{ steps.package-version-to-output.outputs.PACKAGE_VERSION }}"
