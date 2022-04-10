@@ -13,3 +13,4 @@ RUN curl -s https://api.github.com/repos/WDaan/VueTorrent/releases/latest \
 
 FROM $BASE_IMAGE as final
 COPY --from=builder /app/vuetorrent/ /app/
+USER kah
