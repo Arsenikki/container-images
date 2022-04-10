@@ -10,7 +10,7 @@ MINE=`curl -s -H "Authorization: token ${supersecretpat}" https://api.github.com
 echo $UPSTREAM
 echo $MINE
 
-if [ $UPSTREAM != $MINE ]; then
+if [ $UPSTREAM == $MINE ]; then
   echo "Upstream version is different from mine."
   echo $UPSTREAM > $TEMPFILE
   echo "Created $TEMPFILE file with the latest tag."
