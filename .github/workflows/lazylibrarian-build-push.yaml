@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  REGISTRY: docker.io
+  REGISTRY: ghcr.io
   TEMPFILE: new-version.txt
 
 jobs:
