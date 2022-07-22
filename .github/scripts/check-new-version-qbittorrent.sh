@@ -1,6 +1,8 @@
 #!/bin/bash
 TEMPFILE=$1
 
+echo ${supersecretpat}
+
 UPSTREAM=`curl -s -H "Authorization: token ${supersecretpat}" https://api.github.com/orgs/k8s-at-home/packages/container/qbittorrent/versions \
   | jq -r '.[0] .metadata.container.tags[0]'`
 
