@@ -1,0 +1,25 @@
+on: 
+  workflow_call:
+    inputs:
+      script-name: 
+        required: true
+        type: string      
+
+jobs:
+  get-latest-tag: 
+    name: Get the latest image tag from upstream
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get latest package version
+        shell: bash
+        run: |
+          ./.github/scripts/${{ inputs.script-name }} latest-version.txt
+
+      - name: Upload package version artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: package-version
+          path: latest-version.txt
