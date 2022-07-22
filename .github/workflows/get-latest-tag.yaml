@@ -7,7 +7,7 @@ on:
 
 jobs:
   get-latest-tag: 
-    name: Get the latest image tag from upstream
+    name: Get latest image tag from upstream
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
