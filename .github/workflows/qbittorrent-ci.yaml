@@ -1,0 +1,20 @@
+name: Create and push latest qBittorrent image
+
+on:
+  schedule:
+     - cron: "0 0 * * 5"
+  workflow_dispatch:
+
+jobs:
+  get-latest-tag:
+    uses: ./.github/workflows/get-latest-tag.yaml
+    with: 
+      script-name: 'check-new-version-qbittorrent.sh'
+
+  build-and-publish:
+    uses: ./.github/workflows/build-and-publish.yaml
+    needs: [get-latest-tag]
+    with:
+      app-context-path: './qBittorrent-with-VueTorrent'
+      base-image-name: 'ghcr.io/k8s-at-home/qbittorrent'
+      target-image-name: 'ghcr.io/arsenikki/qbittorrent'
