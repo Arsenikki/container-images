@@ -11,9 +11,9 @@ echo $UPSTREAM
 echo $MINE
 
 if [ $UPSTREAM != $MINE ]; then
-  echo "Upstream version is different from mine."
+  echo "Upstream version '$UPSTREAM' is different from mine '$MINE'."
   echo $UPSTREAM > $TEMPFILE
-  echo "Created $TEMPFILE file with the latest tag."
+  echo "Created $TEMPFILE file with tag '$UPSTREAM'."
   exit 0
 fi
 
