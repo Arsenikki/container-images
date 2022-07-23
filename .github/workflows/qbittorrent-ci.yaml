@@ -10,6 +10,7 @@ jobs:
     uses: ./.github/workflows/get-latest-tag.yaml
     with: 
       script-name: 'check-new-version-qbittorrent.sh'
+    secrets: inherit
 
   build-and-publish:
     uses: ./.github/workflows/build-and-publish.yaml
