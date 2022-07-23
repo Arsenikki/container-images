@@ -1,10 +1,10 @@
 #!/bin/bash
 TEMPFILE=$1
 
-UPSTREAM=`curl -s -H "Authorization: token ${supersecretpat}" https://api.github.com/orgs/k8s-at-home/packages/container/qbittorrent/versions \
+UPSTREAM=`curl -s -H "Authorization: token $SUPERSECRETPAT" https://api.github.com/orgs/k8s-at-home/packages/container/qbittorrent/versions \
   | jq -r '.[0] .metadata.container.tags | map(select(contains("v"))) | .[]'`
 
-MINE=`curl -s -H "Authorization: token ${supersecretpat}" https://api.github.com/users/Arsenikki/packages/container/qbittorrent/versions \
+MINE=`curl -s -H "Authorization: token $SUPERSECRETPAT" https://api.github.com/users/Arsenikki/packages/container/qbittorrent/versions \
   | jq -r '.[0] .metadata.container.tags[0]'`
 
 echo $UPSTREAM

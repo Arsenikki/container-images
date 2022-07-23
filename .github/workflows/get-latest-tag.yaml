@@ -18,7 +18,7 @@ jobs:
         run: |
           ./.github/scripts/${{ inputs.script-name }} latest-version.txt
         env:
-          supersecretpat: ${{ secrets.supersecretpat }}
+          SUPERSECRETPAT: ${{ secrets.SUPERSECRETPAT }}
 
       - name: Upload package version artifact
         uses: actions/upload-artifact@v2
